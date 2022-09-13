@@ -1,22 +1,19 @@
-from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.http import HttpResponseNotFound
+from django.shortcuts import render
 
+from .models import *
 
-def main_page(request):
-    return HttpResponse('Главная страница!')
+menu = ['О сайте', 'Добавить статью', 'Обратная связь', 'Войти']
+
 
 def index(request):
-    return HttpResponse("Страница приложения women")
+    posts = Women.objects.all()
+    return render(request, 'women/index.html', {'posts': posts, 'menu': menu, 'title': 'Famous women'})
 
-def categories(request, catid):
-    if request.POST:
-        print(request.POST)
-    return HttpResponse(f"<h1>Статьи по категорям</h1><br><p>{catid}</p>")
-
-def archive(request, year):
-    if int(year) > 2022:
-        return redirect('home', permanent=True)
-    return HttpResponse(f"<h1>Всё про {year} год</h1>")
 
 def pageNotFound(request, exception):
-    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+    return HttpResponseNotFound('<h1>Ошибка 404. Страница не найдена...</h1>')
+
+
+def about(request):
+    return render(request, 'women/about.html', {'menu': menu, 'title': 'Famous women'})
