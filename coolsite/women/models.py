@@ -4,24 +4,29 @@ from django.urls import reverse
 
 
 class Women(models.Model):
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
+    title = models.CharField(max_length=255,
+                             verbose_name='ЗАГОЛОВОК')  # verbose-name - название для заголовка в админ-панели.
+    content = models.TextField(blank=True, verbose_name='НАЗВАНИЕ СТАТЬИ')
     photo = models.ImageField(upload_to="photos/%Y/%m/%d/")
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, null=True) #id к cat - django добавит автоматически
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)  # id к cat - django добавит автоматически
 
-
-    def __str__(self): #Для взаимодействия модели с базой данных через python manage.py shell
+    def __str__(self):  # Для взаимодействия модели с базой данных через python manage.py shell
         return self.title
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_id': self.pk})
 
+    class Meta:
+        verbose_name = 'Известные женщины'  # изменяет название класса в админ-панели
+        verbose_name_plural = 'Известные женщины'  # чтобы уюрать 's' в названии класса
+        ordering = ['-time_create', 'title']  # порядок сортировки в админ-панели
+
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, db_index=True)
+    name = models.CharField(max_length=100, db_index=True, verbose_name='КАТЕГОРИЯ')
 
     def __str__(self):
         return self.name
@@ -29,3 +34,7 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_id': self.pk})
 
+    class Meta:
+        verbose_name = 'КАТЕГОРИЯ'  # изменяет название класса в админ-панели
+        verbose_name_plural = 'КАТЕГОРИИ'  # чтобы уюрать 's' в названии класса
+        ordering = ['id']  # порядок сортировки в админ-панели
