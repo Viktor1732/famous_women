@@ -13,7 +13,7 @@
     <tr>
         <td valign=top>
 
-			<!-- Блок menu -->
+            <!-- Блок menu -->
             {% block mainmenu %}
             <div class="header">
                 <ul id="mainmenu" class="mainmenu">
@@ -25,11 +25,11 @@
                         </a>
                     </li>
                     {% for m in menu %}
-						{% if not forloop.last %}
-							<li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
-						{% else %}
-							<li class="last"><a href="{% url m.url_name %}">{{ m.title }}</a></li>
-						{% endif %}
+                        {% if not forloop.last %}
+                            <li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+                        {% else %}
+                            <li class="last"><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
                 <div class="clear"></div>
@@ -41,10 +41,19 @@
                     <!-- Sidebar слева -->
                     <td valign="top" class="left-chapters">
                         <ul id="leftchapters">
-                            <li class="selected">Все категории</li>
-                            <li><a href="#">Актрисы</a></li>
-                            <li><a href="#">Певицы</a></li>
-                            <li><a href="#">Спортсменки</a></li>
+                            {% if cat_selected == 0 %}
+                                <li class="selected">Все категории</li>
+                            {% else %}
+                                <li><a href="{% url 'home' %}">Все категории</a></li>
+                            {% endif %}
+
+                            {% for c in cats %}
+                                {% if c.pk == cat_selected %}
+                                    <li class="selected">{{ c.name }}</li>
+                                {% else %}
+                                    <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </td>
                     <td valign="top" class="content">
@@ -58,7 +67,6 @@
                             {% block content %}
                             {% endblock content %}
                         </div>
-
                     </td>
                 </tr>
             </table>
