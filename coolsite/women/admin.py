@@ -9,12 +9,15 @@ class WomenAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')  # по каким полям можно будет делать поиск
     list_editable = ('is_published',)  # список полей, которые будут редактируемые
     list_filter = ('is_published', 'time_create')  # поля по которым сможе фильтровать список статей
+    prepopulated_fields = {'slug': ('title',)}  # для автоматического заполнения слага
 
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
     list_display_links = ('id', 'name')
     search_fields = ('name',)
+    prepopulated_fields = {
+        'slug': ('name',)}  # для автоматического заполнения слага в админ-панели. Такой-же как и в категориях
 
 
 admin.site.register(Women, WomenAdmin)
