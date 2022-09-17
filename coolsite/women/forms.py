@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from .models import *
 
@@ -15,3 +16,10 @@ class AddPostForm(forms.ModelForm):  # Прописывае только те д
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 100, 'rows': 10}),
         }
+
+    #Создаю собственный валидатор
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if len(title) > 100:
+            raise ValidationError('Длина символов превышена. Максимальная длина символов 100.')
+        return title
