@@ -1,6 +1,6 @@
 from django.http import HttpResponseNotFound, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView
 
 from .forms import AddPostForm
 from .models import *
@@ -68,16 +68,29 @@ def about(request):
     return render(request, 'women/about.html', {'menu': menu, 'title': 'Famous women'})
 
 
-def show_post(request, post_slug):
-    post = get_object_or_404(Women, slug=post_slug)
-    context = {
-        'post': post,
-        'menu': menu,
-        'title': 'post.title',
-        'cat_selected': post.cat_id,
-    }
+# def show_post(request, post_slug):
+#     post = get_object_or_404(Women, slug=post_slug)
+#     context = {
+#         'post': post,
+#         'menu': menu,
+#         'title': 'post.title',
+#         'cat_selected': post.cat_id,
+#     }
+#
+#     return render(request, 'women/post.html', context=context)
 
-    return render(request, 'women/post.html', context=context)
+class ShowPost(DetailView):  # DetailView служит, например, для отображения постаъ
+    model = Women
+    template_name = 'women/post.html'
+    slug_url_kwarg = 'post_slug'  # прописывается переменная для слага (для url.py)
+    # pk_url_kwarg = 'post.pk' Если использовать ID вместо слаг
+    context_object_name = 'post'  # определили переменную (для post.html)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # для отображения меню и заголовка
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post']
+        context['menu'] = menu
+        return context
 
 
 # def show_category(request, cat_id):
