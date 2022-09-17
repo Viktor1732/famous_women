@@ -12,7 +12,7 @@ class Women(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT)  # id к cat - django добавит автоматически
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')  # id к cat - django добавит автоматически
 
     def __str__(self):  # Для взаимодействия модели с базой данных через python manage.py shell
         return self.title
