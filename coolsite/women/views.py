@@ -1,13 +1,13 @@
 from django.http import HttpResponseNotFound, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import AddPostForm
 from .models import *
 
 menu = [{'title': 'О сайте', 'url_name': 'about'},
         {'title': 'Добавить статью', 'url_name': 'add_page'},
-        {'title': 'Обратная связье', 'url_name': 'contact'},
+        {'title': 'Обратная связь', 'url_name': 'contact'},
         {'title': 'Войти', 'url_name': 'login'},
         ]
 
@@ -44,16 +44,27 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Ошибка 404. Страница не найдена...</h1>')
 
 
-def addpage(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()  # Если форма связана с моделью, то для сохранения достаточно записать так
-            return redirect('home')
+# def addpage(request):
+#     if request.method == 'POST':
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()  # Если форма связана с моделью, то для сохранения достаточно записать так
+#             return redirect('home')
+#
+#     else:
+#         form = AddPostForm()
+#     return render(request, 'women/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
 
-    else:
-        form = AddPostForm()
-    return render(request, 'women/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
+class AddPage(CreateView): # Класс для добавления, например, поста
+    form_class = AddPostForm  # AddPostForm - класс формы, который будет подключаться к классу вида
+    template_name = 'women/addpage.html'
+    # success_url = reverse_lazy('home') - если хотим перенаправить послес добавления статьи в другое место
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # для отображения меню и заголовка
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавление статьи'
+        context['menu'] = menu
+        return context
 
 
 def contact(request):
