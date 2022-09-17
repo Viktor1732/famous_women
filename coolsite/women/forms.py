@@ -10,7 +10,7 @@ class AddPostForm(forms.ModelForm):  # Прописывае только те д
 
     class Meta:
         model = Women
-        fields = ['title', 'slug', 'content', 'is_published', 'cat']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 100, 'rows': 10}),
