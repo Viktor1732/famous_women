@@ -12,7 +12,7 @@ menu = [{'title': 'О сайте', 'url_name': 'about'},
         ]
 
 
-class WomenHome(ListView):
+class WomenHome(ListView):  # ListView - Отображает ввиде списка
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
@@ -24,7 +24,7 @@ class WomenHome(ListView):
         context['cat_selected'] = 0
         return context
 
-    def get_queryset(self): #Делаю чтобы отображались только опубликованные статьи
+    def get_queryset(self):  # Делаю чтобы отображались только опубликованные статьи
         return Women.objects.filter(is_published=True)
 
 
@@ -80,13 +80,28 @@ def show_post(request, post_slug):
     return render(request, 'women/post.html', context=context)
 
 
-def show_category(request, cat_id):
-    posts = Women.objects.filter(cat_id=cat_id)
+# def show_category(request, cat_id):
+#     posts = Women.objects.filter(cat_id=cat_id)
+#
+#     context = {
+#         'posts': posts,
+#         'menu': menu,
+#         'title': 'Отображение по рубрикам',
+#         'cat_selected': cat_id,
+#     }
+#     return render(request, 'women/index.html', context=context)
 
-    context = {
-        'posts': posts,
-        'menu': menu,
-        'title': 'Отображение по рубрикам',
-        'cat_selected': cat_id,
-    }
-    return render(request, 'women/index.html', context=context)
+class WomenCategory(ListView):  # ListView - Отображает ввиде списка
+    model = Women
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):  # Делаю чтобы отображались только опубликованные статьи
+        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], id_published=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Категория - ' + str(context['posts'][0].cat)
+        context['menu'] = menu
+        context['cat_selected'] = context['posts'][0].cat_id
+        return context
