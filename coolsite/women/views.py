@@ -95,9 +95,10 @@ class WomenCategory(ListView):  # ListView - Отображает ввиде с�
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
+    allow_empty = False  # Если установлен False, будет появляться исключение 404
 
     def get_queryset(self):  # Делаю чтобы отображались только опубликованные статьи
-        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], id_published=True)
+        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
